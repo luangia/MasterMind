@@ -4,9 +4,9 @@
 
 ; Welcome to MasterMind.  This version has a graphical output and a textual input.
 ; The shell was written by Dr. Browning February 10, 2014.
-;  There are two functions that the student needs to write to complete this project:
-;  First, write the code to determine the correct score for a guess.
-;  Second, write the code to create a random pattern for the game.
+;
+; Assignment finished by Ben Zimmerman and Lucas Pham
+; More enhancements pending
 
 ; Set up the initial frame for the output display
 (define frame (new frame%
@@ -39,7 +39,22 @@
 ;;;;;;;;;;;;;;
 ; Assignment 2 :  Make this a random secret code
 ;;;;;;;;;;;;;;
-(define pattern '("red" "purple" "red" "yellow" "red"))
+
+; Get random element from a list
+(define (random-ele mylist)
+  (list-ref mylist (random (length mylist))))
+
+; Make a list with length len from random numbers from a list
+(define (random-list mylist newlist len)
+  (if (>= 0 len)
+      newlist
+      (random-list mylist
+                   (cons (random-ele mylist) newlist)
+                   (- len 1))))
+; Define the patter
+(define pattern
+  (random-list mycolors '() 5))
+  
 
 ; Helper function.  Returns the ith item from mylist
 ; NOT ROBUST. This assumes i is less than or equal to length of mylist
@@ -83,13 +98,40 @@
 ; also occurs in mycode (ignoring all items previously matched).
 ; The returned list then contains "tan" entries as needed to fill out the five entries.
 (define (score mycode myguess)
+  (combine (checkblack mycode myguess) (checkwhite mycode myguess) 5))
+
+; A complete combining of blacks and whites
+(define (combine blacks whites len)
+  (addblanks (combineBW blacks whites) len))
+
+; Add blank ("tan") to the pattern
+(define (addblanks list len)
+  (if (eq? len (length list))
+      list
+      (addblanks (append list '("tan")) len)))
+
+; Combine blacks and whites
+(define (combineBW blacks whites)
+  (if (< (length whites) (length blacks))
+      blacks
+      (combineBW (append blacks (list (car whites))) (cdr whites))))
+
+; Check for the number of blacks
+(define (checkblack mycode myguess)
   (if (null? myguess)
       '()
-      (if (eq? (car mycode) (car myguess))
-          (append (list "black") (score (cdr mycode) (cdr myguess)))
-          (append (list "tan") (score (cdr mycode) (cdr myguess))))))
-  ;'("black" "white" "white" "tan" "tan"))
-(trace score)
+      (if (eq? (car myguess) (car mycode))
+          (append (list "black") (checkblack (cdr mycode) (cdr myguess)))
+          (checkblack (cdr mycode) (cdr myguess)))))
+
+; Check for the number of whites
+(define (checkwhite mycode myguess)
+  (if (null? myguess)
+      '()
+      (if (member (car myguess) mycode)
+          (append (list "white")
+                  (checkwhite (cdr myguess) (remove (car myguess) mycode)))
+          (checkwhite (cdr myguess) mycode))))
 
 ; Display a guess and its score
 (define (guess mylist)
