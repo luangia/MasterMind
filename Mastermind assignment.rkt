@@ -16,7 +16,7 @@
 
 ; Show the available colors in a white band at the top of the display
 
-(define mycolors '("red" "orange" "yellow" "green" "SkyBlue" "blue" "purple" "brown"))
+(define mycolors '("red" "orange" "yellow" "green" "skyblue" "blue" "purple" "brown"))
 
 (define (display-colors dc)
   (send dc set-pen "black" 1 'solid )  
@@ -51,7 +51,8 @@
       (random-list mylist
                    (cons (random-ele mylist) newlist)
                    (- len 1))))
-; Define the patter
+
+; Define the pattern
 (define pattern
   (random-list mycolors '() 5))
   
@@ -106,13 +107,13 @@
 
 ; Add blank ("tan") to the pattern
 (define (addblanks list len)
-  (if (eq? len (length list))
+  (if (equal? len (length list))
       list
       (addblanks (append list '("tan")) len)))
 
 ; Combine blacks and whites
 (define (combineBW blacks whites)
-  (if (< (length whites) (length blacks))
+  (if (<= (length whites) (length blacks))
       blacks
       (combineBW (append blacks (list (car whites))) (cdr whites))))
 
@@ -133,22 +134,35 @@
                   (checkwhite (cdr myguess) (remove (car myguess) mycode)))
           (checkwhite (cdr myguess) mycode))))
 
-; Display a guess and its score
+; Display a guess and its score, track the guess, and see if the user won
 (define (guess mylist)
-  (addaline mylist (score pattern mylist)))
+  (set! numguesses (+ numguesses 1))
+  (let ((myscore (score pattern mylist)))
+    (addaline mylist myscore)
+    (judgewin myscore)
+    )
+  )
 
-; Sample calls 
+; Track number of guesses
+(define numguesses 0)
+
+;Indicate when the player has won
+(define (judgewin pegs)
+  (when (equal? pegs '("black" "black" "black" "black" "black"))
+    (display "You win! Number of guesses: ")
+    (display numguesses)
+    )
+  )
+
+; Show available colors 
 (show-colors)
-;(guess '("red" "blue" "green" "yellow" "orange"))
-;(addaline '("green" "purple" "SkyBlue" "brown" "red") '("black" "black" "black" "tan" "tan"))
-;(addaline '("red" "brown" "blue" "skyblue" "red") '("black" "white" "tan" "tan" "tan"))
-;(addaline '("yellow" "red" "yellow" "blue" "yellow") '("white" "tan" "tan" "tan" "tan"))
-;(addaline '("orange" "purple" "green" "yellow" "orange") '("black" "white" "white" "tan" "tan"))
-;(addaline '("red" "orange" "yellow" "green" "skyblue") '("black" "black" "black" "black" "black"))
+
+; Show pattern for testing
+;(display pattern)
 
 ; Prompt the user
 (display "Welcome to MasterMind\n")
 (display "Guess a code of length five using these colors:\n")
 mycolors
 (display "Here is a sample guess:\n")
-(display "(guess '(\"yellow\" \"red\" \"yellow\" \"blue\" \"yellow\"))")
+(display "(guess '(\"yellow\" \"red\" \"green\" \"blue\" \"purple\"))")
