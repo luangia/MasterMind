@@ -16,8 +16,11 @@
 
 ; Show the available colors in a white band at the top of the display
 
-
+<<<<<<< HEAD
 (define possiblecolors '("red" "orange" "yellow" "green" "SkyBlue" "blue" "purple" "brown"))
+=======
+(define mycolors '("red" "orange" "yellow" "green" "skyblue" "blue" "purple" "brown"))
+>>>>>>> dc90894259cf79463445b43b992b7399d6500cdb
 
 (define (display-colors dc)
   (send dc set-pen "black" 1 'solid )  
@@ -53,6 +56,13 @@
                    (cons (random-ele mylist) newlist)
                    (- len 1))))
 
+<<<<<<< HEAD
+=======
+; Define the pattern
+(define pattern
+  (random-list mycolors '() 5))
+  
+>>>>>>> dc90894259cf79463445b43b992b7399d6500cdb
 
 ; Helper function.  Returns the ith item from mylist
 ; NOT ROBUST. This assumes i is less than or equal to length of mylist
@@ -104,7 +114,11 @@
 
 ; Add blank ("tan") to the pattern
 (define (addblanks list len)
+<<<<<<< HEAD
   (if (= len (length list))
+=======
+  (if (equal? len (length list))
+>>>>>>> dc90894259cf79463445b43b992b7399d6500cdb
       list
       (addblanks (append list '("tan")) len)))
 
@@ -133,6 +147,12 @@
 
 ; Display a guess and its score, track the guess, and see if the user won
 (define (guess mylist)
+<<<<<<< HEAD
+  (addaline mylist (score pattern mylist)))
+
+
+; Sample calls 
+=======
   (set! numguesses (+ numguesses 1))
   (let ((myscore (score pattern mylist)))
     (addaline mylist myscore)
@@ -145,13 +165,14 @@
 
 ;Indicate when the player has won
 (define (judgewin pegs)
-  (when (equal? pegs (build-list pattern-len (lambda (x) "black")))
+  (when (equal? pegs '("black" "black" "black" "black" "black"))
     (display "You win! Number of guesses: ")
     (display numguesses)
-   )
-)
+    )
+  )
 
 ; Show available colors 
+>>>>>>> dc90894259cf79463445b43b992b7399d6500cdb
 (show-colors)
 
 ; Show pattern for testing
@@ -159,6 +180,8 @@
 
 ; Prompt the user
 (display "Welcome to MasterMind\n")
+;(display "Guess a code of length five using these colors:\n")
+;mycolors
 
 ; Get the length of the pattern from user
 (display "How long is your pattern?\n")
@@ -179,5 +202,9 @@ mycolors
   (random-list mycolors '() pattern-len))
 
 (display "Here is a sample guess:\n")
-(display "(guess '(\"yellow\" \"red\" \"green\" \"blue\" \"purple\"))")
+<<<<<<< HEAD
+(display "(guess '(\"yellow\" \"red\" \"yellow\" \"blue\" \"yellow\"))")
 pattern
+=======
+(display "(guess '(\"yellow\" \"red\" \"green\" \"blue\" \"purple\"))")
+>>>>>>> dc90894259cf79463445b43b992b7399d6500cdb
